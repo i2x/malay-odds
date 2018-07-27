@@ -1,0 +1,143 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+	<style type="text/css">
+		
+		th,td{
+			font-size: 11px;
+		}
+		body{
+			background-color: #555;
+		}
+	</style>
+	
+
+<div class="container">
+
+
+  <table class="table table-dark table-striped">
+    <thead>
+    	<tr>
+    		<th> % : <input type="text" value="10" id="offset">
+    		</th>
+
+    		<th> L : <input type="text" value="0" id="shift">
+    		</th>
+    	</tr>
+      <tr>
+        <th>Base</th>
+        <th>Home</th>
+        <th>Away</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+     
+    </tbody>
+  </table>
+</div>
+
+
+
+
+<script type="text/javascript">
+	
+
+var vat = 0.10;
+var shift = 0;
+
+
+make_table();
+
+
+
+function make_table()
+{
+
+	$('#table-body').html("");
+
+	for(var i =  -1.00 ;i<=1.00;i = i = i+0.01)
+	{
+		 var base = Number.parseFloat(i).toFixed(2);
+		 $('#table-body').append("<tr>");
+		 $('#table-body').append("<td>"+ Math.round(100*base)+"</td>");
+		 $('#table-body').append("<td>"+malay_odds(base,vat,shift)+"</td>");
+		 $('#table-body').append("<td>"+malay_events(base,shift)+"</td>");
+		 $('#table-body').append("</tr>");
+
+	}
+
+	    var cells=document.getElementsByTagName("td"); //select all the table cell tags
+       for(var i=0;i<cells.length;i++){  //iterate through each of them
+       //check if content is more than 0
+       if(parseFloat(cells[i].textContent || cells[i].innerText)  < 0){ 
+           cells[i].style.color="#FF0033"; //change background to red
+       }
+    }
+
+
+}
+
+
+$('#offset').change(function(){
+
+	vat = $(this).val()/100.00;
+	make_table();
+
+
+});
+
+$('#shift').change(function(){
+
+	vat = $(this).val()/100.00;
+	make_table();
+
+
+});
+
+
+
+
+
+  
+
+
+
+function endoce(odds)
+{
+    var output = odds > 1 ? -1 * (2.00 - odds) : odds;
+    
+    return Number.parseFloat(output).toFixed(2);
+
+}
+function decode(odds)
+{
+  return odds > 0 ?  odds : 2.00 + Number.parseFloat(odds);
+
+}
+function malay_odds(base,vat,shift)
+{
+	var base1 = decode(base);
+	var vat_max = 2.00 - vat;
+    return endoce(vat_max - (base1 + shift ));
+ 
+}
+function malay_events(base,shift)
+{
+
+	var base = decode(base);
+    return endoce(base +shift);
+
+}
+
+
+</script>
